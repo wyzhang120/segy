@@ -3,7 +3,7 @@ from SegyParser import readsegy
 
 if 'HOSTNAME' in os.environ.keys():
     if os.environ['HOSTNAME'] == 'sabine.cacds.uh.edu' or 'compute-' in os.environ['HOSTNAME']:
-        dataDir = '/project/stewart/wzhang/Pioneer/Logs'
+        dataDir = '/project/stewart/wzhang/Pioneer/Rotated_052019'
     else:
         raise ValueError('Host not recognized')
 elif os.environ['COMPUTERNAME'] == 'LENOVO-PC':

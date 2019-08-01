@@ -50,7 +50,7 @@ def byte2num(f, hdrtype, bloc, byteOrder='big'):
 
 class readsegy:
     def __init__(self, dataDir, fsegy,
-                 txthdr = 'txthdr.txt', binhdr = 'binhdr.txt', byteOrder = 'big'):
+                 txthdr = 'txthdr.txt', binhdr = 'binhdr.txt', byteOrder = 'big', outDir=None):
         """
 
         :param dataDir: string
@@ -58,7 +58,12 @@ class readsegy:
         :param txthdr: string, file name of textural header to save
         :param binhdr: string, file name of binary header to save
         :param byteOrder: string, byte order: big, litte, native
+        :param outDir: string, directory to save headers
         """
+        if outDir is None:
+            self.outDir = dataDir
+        else:
+            self.outDir = outDir
         self.dataDir = dataDir
         self.fsegy = fsegy
         self.txthdr = txthdr
@@ -71,7 +76,7 @@ class readsegy:
         with open(os.path.join(self.dataDir, self.fsegy), 'rb') as f:
             tmp = f.read(3200)
             txt = tmp.decode('cp1140')
-        with open(os.path.join(self.dataDir, self.txthdr), 'w') as f:
+        with open(os.path.join(self.outDir, self.txthdr), 'w') as f:
             for i in range(40):
                 f.write(txt[i * 80 : (i + 1) * 80] + '\n')
 
@@ -85,7 +90,7 @@ class readsegy:
         trcNt = self.__getattribute__('trcNt')
         ntTest = np.unique(trcNt)
         ntrace = len(trcNt)
-        with open(os.path.join(self.dataDir, self.binhdr), 'w') as f:
+        with open(os.path.join(self.outDir, self.binhdr), 'w') as f:
             f.write('Values from bindary header\n')
             for key, val in binhdr.items():
                 f.write('{:30s} {:d}\n'.format(key, val))
@@ -98,7 +103,7 @@ class readsegy:
             else:
                 f.write('{:30s} {:s}\n'.format('Same nt every trace', 'False'))
                 df = pd.DataFrame(data=trcNt, columns=['nt'])
-                fcsv = os.path.join(self.dataDir, 'nt.csv')
+                fcsv = os.path.join(self.outDir, 'nt.csv')
                 df.to_csv(fcsv)
                 f.write('  nt of every trace written in file: \n'
                         '       {:s}\n'.format(fcsv))
@@ -148,4 +153,4 @@ class readsegy:
             for ikey, ival in idict.items():
                 trchdr[ikey] = ival
         df = pd.DataFrame(data=trchdr)
-        df.to_csv(os.path.join(self.dataDir, 'trchdr.csv'))
+        df.to_csv(os.path.join(self.outDir, 'trchdr.csv'))

@@ -4,6 +4,7 @@ from SegyParser import readsegy
 if 'HOSTNAME' in os.environ.keys():
     if os.environ['HOSTNAME'] == 'sabine.cacds.uh.edu' or 'compute-' in os.environ['HOSTNAME']:
         dataDir = '/project/stewart/wzhang/Pioneer/Rotated_052019'
+        outDir = os.path.join(dataDir, 'Phase1P_hdr')
     else:
         raise ValueError('Host not recognized')
 elif os.environ['COMPUTERNAME'] == 'LENOVO-PC':
@@ -18,6 +19,6 @@ trcDict = {'recid': (9, 4, 1), 'srcid': (13, 4, 1), 'zsrc': (41, 4, 1),
            'zrec': (45, 4, 1), 'zfbscaler': (61, 2, 1), 'xyscaler': (71, 2, 1),
            'xrec': (73, 4, 1), 'yrec': (77, 4, 1), 'xsrc': (81, 4, 1), 'ysrc': (85, 4, 1),
            'fb' : (221, 4, 1)}
-segy = readsegy(dataDir, fsegy)
+segy = readsegy(dataDir, fsegy, outDir=outDir)
 if __name__ == '__main__':
-    segy.trchdr(trcDict, nproc=4)
+    segy.trchdr(trcDict, nproc=8)
